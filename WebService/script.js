@@ -197,6 +197,26 @@ async function registerItem(event)
     }
 }
 
+async function openEditModal(id) 
+{
+    try 
+    {
+        const item = await fetchData(`${ITEM_API_URL}/${id}`);
+        document.getElementById('edit-id').value = item.id;
+        document.getElementById('edit-name').value = item.name;
+        document.getElementById('edit-description').value = item.description;
+        document.getElementById('edit-price').value = item.price;
+        document.getElementById('edit-quantity').value = item.quantity;
+
+        new bootstrap.Modal(document.getElementById('editItemModal')).show();
+    } 
+    catch (error) 
+    {
+        console.error('Error loading item for editing:', error);
+        alert('An error occurred while loading the item for editing. Please check the console for details.');
+    }
+}
+
 async function saveItemEdit(event) 
 {
     event.preventDefault();
@@ -223,6 +243,26 @@ async function saveItemEdit(event)
     {
         console.error('Error updating item:', error);
         alert('An error occurred while updating the item. Please check the console for details.');
+    }
+}
+
+async function openSellModal(id) 
+{
+    try 
+    {
+        const item = await fetchData(`${ITEM_API_URL}/${id}`);
+        document.getElementById('sell-id').value = item.id;
+        document.getElementById('sell-name').value = item.name;
+        document.getElementById('sell-description').value = item.description;
+        document.getElementById('sell-price').value = item.price;
+        document.getElementById('sell-total').value = item.quantity;
+
+        new bootstrap.Modal(document.getElementById('sellItemModal')).show();
+    } 
+    catch (error) 
+    {
+        console.error('Error loading item for sale:', error);
+        alert('An error occurred while loading the item for sale. Please check the console for details.');
     }
 }
 
