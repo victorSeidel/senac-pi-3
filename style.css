@@ -1,0 +1,60 @@
+body 
+{
+    background-color: #f8f9fa;
+}
+
+.navbar-brand 
+{
+    margin: 0 auto;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+section 
+{
+    padding-top: 80px;
+    margin-top: -80px;
+}
+
+.btn-withdraw 
+{
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.card 
+{
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.table 
+{
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.modal-content 
+{
+    border: none;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.btn-top 
+{
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: none;
+    font-size: 16px;
+}
+
+.btn-top:hover 
+{
+    background-color: #0056b3;
+}
