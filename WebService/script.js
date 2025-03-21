@@ -362,3 +362,71 @@ async function deleteItem(id)
         }
     }
 }
+
+async function calculateTotalMoney() 
+{
+    try 
+    {
+        const sales = await fetchData(SALE_API_URL);
+        const totalSales = sales.reduce((total, sale) => total + sale.money, 0);
+
+        const withdrawals = await fetchData(WITHDRAWAL_API_URL);
+        const totalWithdrawals = withdrawals.reduce((total, withdrawal) => total + withdrawal.amount, 0);
+
+        const totalMoney = totalSales - totalWithdrawals;
+
+        document.getElementById('total-money-input').value = totalMoney.toFixed(2);
+    } 
+    catch (error) 
+    {
+        console.error('Error calculating total money:', error);
+        alert('An error occurred while calculating total money. Please check the console for details.');
+    }
+}
+
+function searchItems() 
+{
+    const searchTerm = document.getElementById('search-items').value.toLowerCase();
+    const filteredItems = allItems.filter(item => 
+    {
+        return (
+            item.id.toString().includes(searchTerm) ||
+            item.name.toLowerCase().includes(searchTerm) ||
+            item.description.toLowerCase().includes(searchTerm) ||
+            item.quantity.toString().includes(searchTerm) ||
+            item.price.toString().includes(searchTerm) ||
+            (item.available ? 'yes' : 'no').includes(searchTerm)
+        );
+    });
+    renderItems(filteredItems); // Renderiza os itens filtrados
+}
+
+function searchSales() 
+{
+    const searchTerm = document.getElementById('search-sales').value.toLowerCase();
+    const filteredSales = allSales.filter(sale => 
+    {
+        return (
+            sale.id.toString().includes(searchTerm) ||
+            sale.item_id.toString().includes(searchTerm) ||
+            sale.money.toString().includes(searchTerm) ||
+            new Date(sale.date).toLocaleDateString().includes(searchTerm)
+        );
+    });
+    renderSales(filteredSales); // Renderiza as vendas filtradas
+}
+
+function searchWithdrawals() 
+{
+    const searchTerm = document.getElementById('search-withdrawals').value.toLowerCase();
+    const filteredWithdrawals = allWithdrawals.filter(withdrawal => 
+    {
+        return (
+            withdrawal.id.toString().includes(searchTerm) ||
+            withdrawal.amount.toString().includes(searchTerm) ||
+            withdrawal.reason.toLowerCase().includes(searchTerm) ||
+            new Date(withdrawal.date).toLocaleDateString().includes(searchTerm)
+        );
+    });
+    renderWithdrawals(filteredWithdrawals); // Renderiza os saques filtrados
+}
