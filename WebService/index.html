@@ -19,13 +19,16 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav mx-auto">
                     <li class="nav-item">
+                        <a class="nav-link" href="#" style="margin-right: auto;"> <i class="bi"></i> Home </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#total-money">Total Money</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="#register">Register</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#inventory">Inventory</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#total-money">Total Money</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#sales">Sales</a>
@@ -58,7 +61,7 @@
                 <h2 class="card-title text-secondary">Total Money</h2>
                 <div class="input-group">
                     <span class="input-group-text">$</span>
-                    <input type="text" class="form-control" id="total-money" name="money" readonly>
+                    <input type="text" class="form-control" id="total-money-input" name="money" readonly>
                 </div>
             </div>
         </div>
@@ -90,7 +93,7 @@
                         <input type="text" class="form-control" id="price" name="price" required>
                     </div>
                     <br>
-                    <button type="submit" class="btn btn-primary w-100">Register</button>
+                    <button type="submit" id="register-btn" class="btn btn-primary w-100">Register</button>
                 </form>
             </div>
         </div>
@@ -104,7 +107,7 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="text-secondary mb-0">Products</h2>
             <div class="w-50">
-                <input type="text" class="form-control" id="search-inventory" placeholder="Search by any field">
+                <input type="text" class="form-control" id="search-items" placeholder="Search by any field">
             </div>
         </div>
     </section>
@@ -227,7 +230,7 @@
                             <input type="number" class="form-control" id="sell-total" name="total" readonly>
                         </div>
                         <div class="mb-3">
-                            <label for="sell-quantity" class="form-label">Quantity To Sell</label>
+                            <label for="sell-quantity" id="quant-sell--input" class="form-label">Quantity To Sell</label>
                             <input type="number" class="form-control" id="sell-quantity" name="quantity" required>
                         </div>
                         <div class="modal-footer">
@@ -253,7 +256,7 @@
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h2 class="text-secondary mb-0">Withdrawals</h2>
             <div class="w-50">
-                <input type="text" class="form-control" id="search-withdraw" placeholder="Search by any field">
+                <input type="text" class="form-control" id="search-withdrawals" placeholder="Search by any field">
             </div>
         </div>
     </section>
@@ -286,11 +289,11 @@
                 <div class="modal-body">
                     <form id="withdraw-form">
                         <div class="mb-3">
-                            <label for="withdraw-amount" class="form-label">Amount</label>
+                            <label for="withdraw-amount" id="amount-input" class="form-label">Amount</label>
                             <input type="number" class="form-control" id="withdraw-amount" required>
                         </div>
                         <div class="mb-3">
-                            <label for="withdraw-reason" class="form-label">Reason</label>
+                            <label for="withdraw-reason" id="reason-input" class="form-label">Reason</label>
                             <input type="text" class="form-control" id="withdraw-reason" required>
                         </div>
                         <div class="modal-footer">
