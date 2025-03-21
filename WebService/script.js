@@ -169,3 +169,156 @@ function renderWithdrawals(withdrawals)
         </tr>
     `).join('');
 }
+
+async function registerItem(event) 
+{
+    event.preventDefault();
+
+    const newItem = 
+    {
+        name: document.getElementById('name').value,
+        description: document.getElementById('description').value,
+        quantity:  document.getElementById('quantity').value,
+        price: document.getElementById('price').value.replace(/,/g, '.'),
+        available: parseInt(document.getElementById('quantity').value) > 0
+    };
+
+    try 
+    {
+        await fetchData(ITEM_API_URL, 'POST', newItem);
+        alert('Item registered successfully!');
+        loadItems(); // Recarrega os itens após cadastrar um novo
+        calculateTotalMoney();
+    } 
+    catch (error) 
+    {
+        console.error('Error registering item:', error);
+        alert('An error occurred while registering the item. Please check the console for details.');
+    }
+}
+
+async function saveItemEdit(event) 
+{
+    event.preventDefault();
+
+    const updatedItem = 
+    {
+        name: document.getElementById('edit-name').value,
+        description: document.getElementById('edit-description').value,
+        price: parseFloat(document.getElementById('edit-price').value.replace(/,/g, '.')),
+        quantity: parseInt(document.getElementById('edit-quantity').value),
+        available: parseInt(document.getElementById('edit-quantity').value) > 0,
+    };
+
+    try 
+    {
+        await fetchData(`${ITEM_API_URL}/${document.getElementById('edit-id').value}`, 'PUT', updatedItem);
+        alert('Item updated successfully!');
+        loadItems(); // Recarrega os itens após editar
+        calculateTotalMoney();
+        clearFields('edit-item-form');
+        bootstrap.Modal.getInstance(document.getElementById('editItemModal')).hide();
+    } 
+    catch (error) 
+    {
+        console.error('Error updating item:', error);
+        alert('An error occurred while updating the item. Please check the console for details.');
+    }
+}
+
+async function sellItem(event) 
+{
+    event.preventDefault();
+
+    const itemId = document.getElementById('sell-id').value;
+    const quantitySold = parseInt(document.getElementById('sell-quantity').value);
+
+    try 
+    {
+        const item = await fetchData(`${ITEM_API_URL}/${itemId}`);
+        if (item.quantity < quantitySold) 
+        {
+            alert('Insufficient quantity in stock!');
+            return;
+        }
+
+        const newQuantity = item.quantity - quantitySold;
+        const updatedItem = 
+        {
+            ...item,
+            quantity: newQuantity,
+            available: newQuantity > 0,
+        };
+        await fetchData(`${ITEM_API_URL}/${itemId}`, 'PUT', updatedItem);
+
+        const sale = 
+        {
+            item_id: itemId,
+            quantity: quantitySold,
+            money: item.price * quantitySold,
+            date: new Date().toISOString(),
+        };
+        await fetchData(SALE_API_URL, 'POST', sale);
+
+        alert('Item sold successfully!');
+        loadItems(); // Recarrega os itens após vender
+        loadSales();
+        calculateTotalMoney();
+        clearFields('sell-item-form');
+        bootstrap.Modal.getInstance(document.getElementById('sellItemModal')).hide();
+    } 
+    catch (error) 
+    {
+        console.error('Error selling item:', error);
+        alert('An error occurred while selling the item. Please check the console for details.');
+    }
+}
+
+async function makeWithdrawal(event) 
+{
+    event.preventDefault();
+
+    const withdrawal = 
+    {
+        amount: document.getElementById('withdraw-amount').value,
+        reason: document.getElementById('withdraw-reason').value,
+        date: new Date()
+    };
+
+    try 
+    {
+        await fetchData(WITHDRAWAL_API_URL, 'POST', withdrawal);
+        alert('Withdrawal made successfully!');
+        loadWithdrawals();
+        calculateTotalMoney();
+        clearFields('withdraw-form'); 
+        bootstrap.Modal.getInstance(document.getElementById('withdrawMoneyModal')).hide();
+    } 
+    catch (error) 
+    {
+        console.error('Error making withdrawal:', error);
+        alert('An error occurred while making the withdrawal. Please check the console for details.');
+    }
+}
+
+async function deleteItem(id) 
+{
+    if (confirm('Are you sure you want to delete this item?')) 
+    {
+        try 
+        {
+            const response = await fetchData(`${ITEM_API_URL}/${id}`, 'DELETE');
+            if (response !== null) 
+            {
+                console.log('API response:', response);
+            }
+            alert('Item deleted successfully!');
+            loadItems(); // Recarrega os itens após deletar
+        } 
+        catch (error) 
+        {
+            console.error('Error deleting item:', error);
+            alert('An error occurred while deleting the item. Please check the console for details.');
+        }
+    }
+}
