@@ -107,10 +107,12 @@ async function loadWithdrawals()
     }
 }
 
-function renderItems(items) 
+async function renderItems(items) 
 {
+    const sortedItems = items.sort((a, b) => b.id - a.id);
+
     const tbody = document.getElementById('items-table-body');
-    tbody.innerHTML = items.map(item => `
+    tbody.innerHTML = sortedItems.map(item => `
         <tr>
             <td>${item.id}</td>
             <td>${item.name}</td>
@@ -133,10 +135,12 @@ function renderItems(items)
     `).join('');
 }
 
-function renderSales(sales) 
+async function renderSales(sales) 
 {
+    const sortedSales = sales.sort((a, b) => b.id - a.id);
+
     const tbody = document.getElementById('sales-table-body');
-    tbody.innerHTML = sales.map(sale => `
+    tbody.innerHTML = sortedSales.map(sale => `
         <tr>
             <td>${sale.id}</td>
             <td>${sale.item_id}</td>
@@ -146,10 +150,12 @@ function renderSales(sales)
     `).join('');
 }
 
-function renderWithdrawals(withdrawals) 
+async function renderWithdrawals(withdrawals) 
 {
+    const sortedWithdrawals = withdrawals.sort((a, b) => b.id - a.id);
+
     const tbody = document.getElementById('withdrawals-table-body');
-    tbody.innerHTML = withdrawals.map(withdrawal => `
+    tbody.innerHTML = sortedWithdrawals.map(withdrawal => `
         <tr>
             <td>${withdrawal.id}</td>
             <td>${withdrawal.amount}</td>
@@ -307,28 +313,54 @@ async function makeWithdrawal(event)
 
     const withdrawal = 
     {
-        amount: document.getElementById('withdraw-amount').value,
+        amount: document.getElementById('withdraw-amount').value.replace(/,/g, '.'),
         reason: document.getElementById('withdraw-reason').value,
-        date: new Date()
+        date: new Date().toISOString(),
     };
 
     try 
     {
-        await fetchData(WITHDRAWAL_API_URL, 'POST', withdrawal);
-        alert('Withdrawal made successfully!');
+        const response = await fetch(WITHDRAWAL_API_URL, 
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(withdrawal),
+        });
+
+        if (!response.ok) 
+        {
+            const errorText = await response.text();
+            throw new Error(`Erro na requisição: ${response.status} - ${errorText}`);
+        }
+
+        const data = await response.json();
+        console.log('Resposta da API:', data);
+
+        alert('Withdrawal successful!');
         loadWithdrawals();
         calculateTotalMoney();
+
         bootstrap.Modal.getInstance(document.getElementById('withdrawMoneyModal')).hide();
-    } 
-    catch (error) 
+
+    }catch (error) 
     {
         console.error('Error making withdrawal:', error);
-        alert('An error occurred while making the withdrawal. Please check the console for details.');
+        alert(`Error making withdrawal: ${error.message}`);
     }
 }
 
 async function deleteItem(id) 
 {
+    const isItemInSales = allSales.some(sale => sale.item_id === id);
+
+    if (isItemInSales) 
+    {
+        alert('This item cannot be deleted because it is associated with a sale.');
+        return;
+    }
+
     if (confirm('Are you sure you want to delete this item?')) 
     {
         try 
@@ -403,7 +435,7 @@ async function calculateTotalMoney()
     }
 }
 
-function searchItems() 
+async function searchItems() 
 {
     const searchTerm = document.getElementById('search-items').value.toLowerCase();
     const filteredItems = allItems.filter(item => 
@@ -420,7 +452,7 @@ function searchItems()
     renderItems(filteredItems); // Renderiza os itens filtrados
 }
 
-function searchSales() 
+async function searchSales() 
 {
     const searchTerm = document.getElementById('search-sales').value.toLowerCase();
     const filteredSales = allSales.filter(sale => 
@@ -435,7 +467,7 @@ function searchSales()
     renderSales(filteredSales); // Renderiza as vendas filtradas
 }
 
-function searchWithdrawals() 
+async function searchWithdrawals() 
 {
     const searchTerm = document.getElementById('search-withdrawals').value.toLowerCase();
     const filteredWithdrawals = allWithdrawals.filter(withdrawal => 
@@ -450,12 +482,12 @@ function searchWithdrawals()
     renderWithdrawals(filteredWithdrawals); // Renderiza os saques filtrados
 }
 
-function generatePDFReport() 
+async function generatePDFReport() 
 {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    function formatDate(date) 
+    async function formatDate(date) 
     {
         const day = String(date.getDate()).padStart(2, '0');
         const month = String(date.getMonth() + 1).padStart(2, '0');
@@ -467,7 +499,7 @@ function generatePDFReport()
     const formattedDate = formatDate(today);
 
     const totalSales = allSales.reduce((total, sale) => total + sale.money, 0);
-    const totalWithdrawals = allWithdrawals.reduce((total, withdrawal) => total + withdrawal.amount, 0);
+    const totalWithdrawals = allWithdrawals.reduce((total, withdrawal) => total +  parseFloat(withdrawal.amount).value.replace(/,/g, '.'), 0);
     const totalValue = totalSales - totalWithdrawals;
 
     const titleFontSize = 16;
@@ -492,7 +524,7 @@ function generatePDFReport()
     doc.setFont('helvetica', 'bold');
     doc.text(`Total Money: R$ ${totalValue.toFixed(2)}`, 10, 40);
 
-    function addCategoryToPDF(title, data) 
+    async function addCategoryToPDF(title, data) 
     {
         doc.addPage();
         doc.setFontSize(titleFontSize);
