@@ -1,0 +1,34 @@
+CREATE DATABASE pi3;
+USE pi3;
+
+CREATE TABLE Items
+(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(30) NOT NULL,
+    description VARCHAR(100) NOT NULL,
+    quantity INT NOT NULL,
+    price VARCHAR(12),
+    available BOOL NOT NULL
+);
+
+SELECT * FROM Items;
+
+CREATE TABLE Sales
+(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    money DOUBLE NOT NULL,
+    date DATE NOT NULL,
+    item_id INT NOT NULL
+);
+
+SELECT * FROM Sales;
+
+CREATE TABLE Withdraw
+(
+	id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    amount DOUBLE NOT NULL,
+    reason VARCHAR(55) NOT NULL,
+    date DATE NOT NULL
+);
+
+SELECT * FROM Withdraw;
