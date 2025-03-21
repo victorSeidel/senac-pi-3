@@ -38,43 +38,32 @@ async function fetchData(url, method = 'GET', body = null)
 }
 
 document.addEventListener('DOMContentLoaded', () => 
+{
+    loadItems();
+    loadSales();
+    loadWithdrawals();
+    calculateTotalMoney();
+
+    document.getElementById('register-form').addEventListener('submit', registerItem);
+    document.getElementById('edit-item-form').addEventListener('submit', saveItemEdit);
+    document.getElementById('sell-item-form').addEventListener('submit', sellItem);
+    document.getElementById('withdraw-form').addEventListener('submit', makeWithdrawal);
+    document.querySelector('.btn-withdraw').addEventListener('click', generatePDFReport);
+
+    // Adiciona os eventos de busca para cada tabela
+    document.getElementById('search-items').addEventListener('input', searchItems);
+    document.getElementById('search-sales').addEventListener('input', searchSales);
+    document.getElementById('search-withdrawals').addEventListener('input', searchWithdrawals);
+
+    document.getElementById('register-form').addEventListener('submit', function () 
     {
-        loadItems();
-        loadSales();
-        loadWithdrawals();
-        calculateTotalMoney();
-    
-        document.getElementById('register-form').addEventListener('submit', registerItem);
-        document.getElementById('edit-item-form').addEventListener('submit', saveItemEdit);
-        document.getElementById('sell-item-form').addEventListener('submit', sellItem);
-        document.getElementById('withdraw-form').addEventListener('submit', makeWithdrawal);
-        document.querySelector('.btn-withdraw').addEventListener('click', generatePDFReport);
-    
-        // Adiciona os eventos de busca para cada tabela
-        document.getElementById('search-items').addEventListener('input', searchItems);
-        document.getElementById('search-sales').addEventListener('input', searchSales);
-        document.getElementById('search-withdrawals').addEventListener('input', searchWithdrawals);
-    
-        document.getElementById('register-form').addEventListener('submit', function () 
+        const form = document.getElementById('register-form');
+        if (form) 
         {
-            const form = document.getElementById('register-form');
-            if (form) 
-            {
-                form.reset();
-            }
-        });
-    
-        document.getElementById('editItemModal').addEventListener('show.bs.modal', function () 
-        {
-            document.getElementById("quant-sell-input").value = "";
-        });
-    
-        document.getElementById('withdrawMoneyModal').addEventListener('show.bs.modal', function () 
-        {
-            document.getElementById("amount-input").value = "";
-            document.getElementById("reason-input").value = "";
-        });
-    });
+            form.reset();
+        }
+    })
+});
 
 async function loadItems() 
 {
@@ -236,7 +225,6 @@ async function saveItemEdit(event)
         alert('Item updated successfully!');
         loadItems(); // Recarrega os itens após editar
         calculateTotalMoney();
-        clearFields('edit-item-form');
         bootstrap.Modal.getInstance(document.getElementById('editItemModal')).hide();
     } 
     catch (error) 
@@ -304,7 +292,6 @@ async function sellItem(event)
         loadItems(); // Recarrega os itens após vender
         loadSales();
         calculateTotalMoney();
-        clearFields('sell-item-form');
         bootstrap.Modal.getInstance(document.getElementById('sellItemModal')).hide();
     } 
     catch (error) 
@@ -331,7 +318,6 @@ async function makeWithdrawal(event)
         alert('Withdrawal made successfully!');
         loadWithdrawals();
         calculateTotalMoney();
-        clearFields('withdraw-form'); 
         bootstrap.Modal.getInstance(document.getElementById('withdrawMoneyModal')).hide();
     } 
     catch (error) 
@@ -347,13 +333,46 @@ async function deleteItem(id)
     {
         try 
         {
-            const response = await fetchData(`${ITEM_API_URL}/${id}`, 'DELETE');
-            if (response !== null) 
+            if (!id) 
             {
-                console.log('API response:', response);
+                throw new Error('Invalid item ID');
             }
+
+            const response = await fetch(`${ITEM_API_URL}/${id}`, 
+            {
+                method: 'DELETE',
+                headers: 
+                {
+                    'Content-Type': 'application/json',
+                },
+            });
+
+            if (!response.ok) 
+            {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            if (response.status !== 204) 
+            {
+                const contentType = response.headers.get('content-type');
+                if (contentType && contentType.includes('application/json')) 
+                {
+                    const data = await response.json();
+                    console.log('API response:', data);
+                } 
+                else 
+                {
+                    const text = await response.text();
+                    console.log('API response (non-JSON):', text);
+                }
+            } 
+            else 
+            {
+                console.log('Item deleted successfully (no content returned).');
+            }
+
             alert('Item deleted successfully!');
-            loadItems(); // Recarrega os itens após deletar
+            loadItems();
         } 
         catch (error) 
         {
