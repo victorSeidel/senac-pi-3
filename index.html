@@ -9,7 +9,191 @@
     <link href="style.css" rel="stylesheet">
 </head>
 <body>
-    <h1>MoneyFlow</h1>
+    <body class="container mt-5">
+
+        <!-- Navigation -->
+        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav mx-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="#register">Register</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#inventory">Inventory</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#total-money">Total Money</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#sales">Sales</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#withdrawals">Withdrawals</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    
+        <br>
+        <br>
+    
+        <!-- Page Content -->
+        <h1 class="text-center mb-4 text-success" id="top">MoneyFlow</h1>
+    
+        <br>
+    
+        <button class="btn btn-success btn-report" class="btn btn-primary" onclick="generatePDF()"> Generate Report </button>
+    
+        <br>
+        <br>
+    
+        <!-- Section Total Money -->
+        <section id="total-money">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title text-secondary">Total Money</h2>
+                    <div class="input-group">
+                        <span class="input-group-text">$</span>
+                        <input type="text" class="form-control" id="total-money" name="money" readonly>
+                    </div>
+                </div>
+            </div>
+        </section>
+    
+        <br>
+        <br>
+    
+        <!-- Section Register -->
+        <section id="register">
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title text-secondary">Register</h2>
+                    <form id="register-form">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="description" class="form-label">Description</label>
+                            <input type="text" class="form-control" id="description" name="description" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="quantity" class="form-label">Quantity</label>
+                            <input type="number" class="form-control" id="quantity" name="quantity" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="text" class="form-control" id="price" name="price" required>
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-primary w-100">Register</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    
+        <br>
+        <br>
+    
+        <!-- Section Inventory -->
+        <section id="inventory">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="text-secondary mb-0">Products</h2>
+                <div class="w-50">
+                    <input type="text" class="form-control" id="search-inventory" placeholder="Search by any field">
+                </div>
+            </div>
+        </section>
+    
+        <!-- Inventory Table -->
+        <section id="inventory">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Description</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Available</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="items-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+    
+        <br>
+        <br>
+    
+        <!-- Section Sales -->
+        <section id="sales">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="text-secondary mb-0">Sales</h2>
+                <div class="w-50">
+                    <input type="text" class="form-control" id="search-sales" placeholder="Search by any field">
+                </div>
+            </div>
+        </section>
+    
+        <!-- Sales Table -->
+        <section id="sales">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Item</th>
+                            <th>Total</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sales-table-body"></tbody>
+                </table>
+            </div>
+        </section>
+    
+        <br>
+        <br>
+    
+        <!-- Withdraw Modal Button -->
+        <button class="btn btn-danger btn-withdraw" data-bs-toggle="modal" data-bs-target="#withdrawMoneyModal" title="Withdraw Money" id="total-money">
+            Withdraw Money
+        </button>
+    
+        <!-- Section Withdrawals -->
+        <section id="withdrawals">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h2 class="text-secondary mb-0">Withdrawals</h2>
+                <div class="w-50">
+                    <input type="text" class="form-control" id="search-withdraw" placeholder="Search by any field">
+                </div>
+            </div>
+        </section>
+    
+        <!-- Withdrawals Table -->
+        <section id="withdrawals">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Amount</th>
+                            <th>Reason</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="withdrawals-table-body"></tbody>
+                </table>
+            </div>
+        </section>
 </body>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
