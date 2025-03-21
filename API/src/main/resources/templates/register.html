@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+    <head th:insert="head.html"></head>
+    <navbar th:insert="navbar.html"/>
+
+    <body>
+        <h1>Register New Item</h1>
+
+        <form method="post"  th:action="@{/sucess}">
+            <input type="hidden" th:field="${item.id}">
+            <p>Name: <input type="text" th:field="${item.name}"></p>
+            <p>Description: <input type="text" th:field="${item.description}"></p>
+            <p>Quantity: <input type="number" th:field="${item.quantity}"></p>
+            <p>Price: <input type="text" th:field="${item.price}"></p>
+
+            <button type="submit">Register</button>
+        </form>
+    </body>
+</html>

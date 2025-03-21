@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+    <head th:insert="head.html"></head>
+    <navbar th:insert="navbar.html"/>
+    
+    <body>
+        <h1>Details</h1>
+
+        <h2 th:text="${item.name}"></h2>
+        
+        <p>Description: <span th:text="${item.description}"></p>
+        <p>Quantity: <span th:text="${item.quantity}"></p>
+        <p>Price: <span th:text="${item.price}"></p>
+    </body>
+</html>
