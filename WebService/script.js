@@ -54,15 +54,6 @@ document.addEventListener('DOMContentLoaded', () =>
     document.getElementById('search-items').addEventListener('input', searchItems);
     document.getElementById('search-sales').addEventListener('input', searchSales);
     document.getElementById('search-withdrawals').addEventListener('input', searchWithdrawals);
-
-    document.getElementById('register-form').addEventListener('submit', function () 
-    {
-        const form = document.getElementById('register-form');
-        if (form) 
-        {
-            form.reset();
-        }
-    })
 });
 
 async function loadItems() 
@@ -169,6 +160,12 @@ async function registerItem(event)
 {
     event.preventDefault();
 
+    if (document.getElementById('quantity').value || document.getElementById('price').value)
+    {
+        alert('Values ​​cannot be negative.');
+        return;
+    }
+
     const newItem = 
     {
         name: document.getElementById('name').value,
@@ -184,6 +181,9 @@ async function registerItem(event)
         alert('Item registered successfully!');
         loadItems(); // Recarrega os itens após cadastrar um novo
         calculateTotalMoney();
+
+        const form = document.getElementById('register-form');
+        if (form) {form.reset(); }
     } 
     catch (error) 
     {
