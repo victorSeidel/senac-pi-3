@@ -160,9 +160,9 @@ async function registerItem(event)
 {
     event.preventDefault();
 
-    if (document.getElementById('quantity').value || document.getElementById('price').value)
+    if (document.getElementById('quantity').value < 0|| document.getElementById('price').value < 0)
     {
-        alert('Values ​​cannot be negative.');
+        alert('Values ​cannot be negative.');
         return;
     }
 
